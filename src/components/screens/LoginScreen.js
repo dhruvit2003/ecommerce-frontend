@@ -4,19 +4,30 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import Loader from '../Loader';
 import Message from '../Message';
 import { useDispatch, useSelector } from 'react-redux';
-import { validEmail, validPassword } from './Regex';
+import { login } from '../../actions/userActions';
+
 
 const LoginScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [Message, setMessage] = useState('');
   const [show, changeshow] = useState('fa fa-eye-slash');
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const redirect = location.search ? location.search.split('=')[1] : '/';
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, userInfo, error } = userLogin;
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [userInfo, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-
-    console.log(email, password);
+    dispatch(login(email, password));
   };
 
   const showPassword = () => {
@@ -40,7 +51,7 @@ const LoginScreen = () => {
               Login
             </Card.Header>
             <Card.Body>
-              {error && <Message variant="danger">{error}</Message>}
+              {Message && <Message variant="danger">{Message}</Message>}
               <Form onSubmit={submitHandler}>
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>

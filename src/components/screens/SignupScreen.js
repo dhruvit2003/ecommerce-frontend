@@ -5,6 +5,7 @@ import Loader from '../Loader';
 import Message from '../Message';
 import { useDispatch, useSelector } from 'react-redux';
 import { validEmail, validPassword } from './Regex';
+import { signup } from '../../actions/userActions';
 
 const SignupScreen = () => {
   const navigate = useNavigate();
@@ -13,28 +14,39 @@ const SignupScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error, setError] = useState('');
+  const [Message, setMessage] = useState('');
   const [show, changeshow] = useState('fa fa-eye-slash');
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const redirect = location.search ? location.search.split('=')[1] : '/';
+  const userSignup = useSelector((state) => state.userSignup);
+  const { loading, userInfo, error } = userSignup;
+
+  useEffect(() => {
+    if (userInfo) {
+      navigate("/");
+    }
+  }, [userInfo, redirect]);
 
   const submitHandler = (e) => {
     e.preventDefault();
-    if(!validEmail.test(email)){
-      setError('Invalid Email');
+    if (!validEmail.test(email)) {
+      setMessage('Invalid Email');
+      navigate('/signup');
+    }
+    else if (!validPassword.test(password)) {
+      setMessage('Invalid Password');
       navigate('/signup');
     }
     else if (password !== confirmPassword) {
-      setError('Passwords do not match');
-      navigate('/signup');
-    }
-    else if(!validPassword.test(password)){
-      setError('Invalid Password');
+      setMessage('Passwords do not match');
       navigate('/signup');
     }
     else {
-      setError('');
-      console.log('Signup Success');
+      dispatch(signup(fname, lname, email, password));
+      setMessage("Signup Successful");
+      navigate('/login');
     }
-    console.log(fname, lname, email, password, confirmPassword);
   };
 
   const showPassword = () => {
@@ -61,7 +73,7 @@ const SignupScreen = () => {
               Sign Up
             </Card.Header>
             <Card.Body>
-              {error && <Message variant="danger">{error}</Message>}
+              {Message && <Message variant="danger">{Message}</Message>}
               <Form onSubmit={submitHandler}>
                 <Form.Group className="mb-3" controlId="fname">
                   <Form.Label>
@@ -116,7 +128,7 @@ const SignupScreen = () => {
                     Password
                   </Form.Label>
                   <InputGroup className="mb-3">
-                    <InputGroup.Checkbox onClick={showPassword}/>{' '}
+                    <InputGroup.Checkbox onClick={showPassword} />{' '}
                     <Form.Control
                       placeholder="Enter Your Password"
                       type="password"
@@ -138,7 +150,7 @@ const SignupScreen = () => {
                     Confirm Password
                   </Form.Label>
                   <InputGroup className="mb-3">
-                    <InputGroup.Checkbox onClick={showPassword}/>{' '}
+                    <InputGroup.Checkbox onClick={showPassword} />{' '}
                     <Form.Control
                       type="password"
                       placeholder="Confirm Password"
