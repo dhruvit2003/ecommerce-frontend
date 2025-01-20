@@ -31,10 +31,10 @@ function ProductScreen({ params }) {
           <Message variant='danger'>{error}</Message>          
         ) : (
           <Row>
-            <Col md={6}>
+            <Col md={3}>
               <Image src={product.image} alt={product.name} fluid />
             </Col>
-            <Col md={3}>
+            <Col md={6}>
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>{product.product_name}</h3>
@@ -46,7 +46,7 @@ function ProductScreen({ params }) {
                     color={"#f8e825"}
                   />
                 </ListGroup.Item>
-                <ListGroup.Item>Brand: {product.productbrand} </ListGroup.Item>
+                <ListGroup.Item>Brand: {product.product_brand} </ListGroup.Item>
                 <ListGroup.Item>Description: {product.product_info}</ListGroup.Item>
               </ListGroup>
             </Col>

@@ -11,7 +11,6 @@ const LoginScreen = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [Message, setMessage] = useState('');
   const [show, changeshow] = useState('fa fa-eye-slash');
   const dispatch = useDispatch();
   const location = useLocation();
@@ -31,7 +30,7 @@ const LoginScreen = () => {
   };
 
   const showPassword = () => {
-    var x = document.getElementById('password');    
+    var x = document.getElementById('password');
     if (x.type === 'password') {
       x.type = 'text';
       changeshow('fa fa-eye')
@@ -46,61 +45,67 @@ const LoginScreen = () => {
       <Row>
         <Col md={4}></Col>
         <Col md={4}>
-          <Card>
-            <Card.Header as="h3" className="text-center bg-black text-light">
-              Login
-            </Card.Header>
-            <Card.Body>
-              {Message && <Message variant="danger">{Message}</Message>}
-              <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-3" controlId="email">
-                  <Form.Label>
-                    <span>
-                      <i className="fa-solid fa-envelope"></i>
-                    </span>{' '}
-                    Email
-                  </Form.Label>
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter Your Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </Form.Group>
-                <Form.Group className="mb-3" >
-                  <Form.Label>
-                    <span>
-                      <i className={show}></i>
-                    </span>{' '}
-                    Password
-                  </Form.Label>
-                  <InputGroup className="mb-3">
-                    <InputGroup.Checkbox onClick={showPassword} />{' '}
+          {loading ? (
+            <Loader />
+          ) : error ? (
+            <Message variant='danger'>{error}</Message>
+          ) : (
+            <Card>
+              <Card.Header as="h3" className="text-center bg-black text-light">
+                Login
+              </Card.Header>
+              <Card.Body>
+                {error && <Message variant='danger'>{error}</Message>}
+                <Form onSubmit={submitHandler}>
+                  <Form.Group className="mb-3" controlId="email">
+                    <Form.Label>
+                      <span>
+                        <i className="fa-solid fa-envelope"></i>
+                      </span>{' '}
+                      Email
+                    </Form.Label>
                     <Form.Control
-                      placeholder="Enter Your Password"
-                      type="password"
+                      type="email"
+                      placeholder="Enter Your Email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
-                      id="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
                     />
-                  </InputGroup>
-                </Form.Group>                
-                <br />
-                <div className="d-grid gap-2">
-                  <Button className="btn btn-md btn-success" type="submit">
-                    Sign Up
-                  </Button>
-                </div>
-              </Form>
-              <Row className="py-3">
-                <Col>
-                  New User? <Link to="/signup">Sign Up</Link>
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
+                  </Form.Group>
+                  <Form.Group className="mb-3" >
+                    <Form.Label>
+                      <span>
+                        <i className={show}></i>
+                      </span>{' '}
+                      Password
+                    </Form.Label>
+                    <InputGroup className="mb-3">
+                      <InputGroup.Checkbox onClick={showPassword} />{' '}
+                      <Form.Control
+                        placeholder="Enter Your Password"
+                        type="password"
+                        required
+                        id="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </InputGroup>
+                  </Form.Group>
+                  <br />
+                  <div className="d-grid gap-2">
+                    <Button className="btn btn-md btn-success" type="submit">
+                      login
+                    </Button>
+                  </div>
+                </Form>
+                <Row className="py-3">
+                  <Col>
+                    New User? <Link to="/signup">Sign Up</Link>
+                  </Col>
+                </Row>
+              </Card.Body>
+            </Card>
+          )}
         </Col>
         <Col md={4}></Col>
       </Row>

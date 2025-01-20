@@ -17,11 +17,15 @@ export const signup = (fname, lname, email, password) => async (dispatch) => {
             type: USER_SIGNUP_SUCCESS,
             payload: data
         })
-        localStorage.setItem('userInfo', JSON.stringify(data))
     } catch (error) {
+        const errorMessage = error.response && error.response.data.detail 
+            ? error.response.data.detail 
+            : error.message;
+
+        // console.log("Signup Failure Payload:", errorMessage);
         dispatch({
             type: USER_SIGNUP_FAIL,
-            payload: error.response && error.response.data.detail ? error.response.data.detail : error.message,
+            payload: errorMessage,
         })
     }
 
@@ -50,4 +54,9 @@ export const login = (email, password) => async (dispatch) => {
             payload: error.response && error.response.data.detail ? error.response.data.detail : error.message,
         })
     }
+}
+
+export const logout = () => (dispatch) => {
+    localStorage.removeItem('userInfo')
+    dispatch({ type: USER_LOGOUT })
 }

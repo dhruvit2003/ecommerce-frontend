@@ -14,38 +14,62 @@ const SignupScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [Message, setMessage] = useState('');
+  const [activeMessage, setActiveMessage] = useState('');
   const [show, changeshow] = useState('fa fa-eye-slash');
   const dispatch = useDispatch();
   const location = useLocation();
   const redirect = location.search ? location.search.split('=')[1] : '/';
   const userSignup = useSelector((state) => state.userSignup);
+  const [validationError, setValidationError] = useState('');
   const { loading, userInfo, error } = userSignup;
 
   useEffect(() => {
     if (userInfo) {
-      navigate("/");
+      console.log(error);
+      setActiveMessage(userInfo.detail);
+      setFname('');
+      setLname('');
+      setEmail('');
+      setPassword('');
+      setConfirmPassword('');
     }
   }, [userInfo, redirect]);
 
+    // Clear activeMessage after 3 seconds
+    useEffect(() => {
+      if (activeMessage) {
+        const timer = setTimeout(() => setActiveMessage(""), 5000);
+        return () => clearTimeout(timer); // Cleanup timer
+      }
+    }, [activeMessage]);
+  
+    // Clear validationError after 3 seconds
+    useEffect(() => {
+      if (validationError) {
+        const timer = setTimeout(() => setValidationError(""), 3000);
+        return () => clearTimeout(timer); // Cleanup timer
+      }
+    }, [validationError]);
+  
   const submitHandler = (e) => {
     e.preventDefault();
     if (!validEmail.test(email)) {
-      setMessage('Invalid Email');
+      setValidationError('Invalid Email');
       navigate('/signup');
     }
     else if (!validPassword.test(password)) {
-      setMessage('Invalid Password');
+      setValidationError('Invalid Password');
       navigate('/signup');
     }
     else if (password !== confirmPassword) {
-      setMessage('Passwords do not match');
+      setValidationError('Passwords do not match');
       navigate('/signup');
     }
+    
     else {
       dispatch(signup(fname, lname, email, password));
-      setMessage("Signup Successful");
-      navigate('/login');
+      setActiveMessage("Signup Successful");
+      // navigate('/login');
     }
   };
 
@@ -73,13 +97,17 @@ const SignupScreen = () => {
               Sign Up
             </Card.Header>
             <Card.Body>
-              {Message && <Message variant="danger">{Message}</Message>}
+              {activeMessage && <Message variant="success">{activeMessage}</Message>}
+              {validationError && <Message variant="danger">{validationError}</Message>}
+              {error && <Message variant="danger">{error}</Message>}
+              {loading && <Loader />}
               <Form onSubmit={submitHandler}>
                 <Form.Group className="mb-3" controlId="fname">
                   <Form.Label>
+                    {" "}
                     <span>
                       <i className="fa fa-user"></i>
-                    </span>{' '}
+                    </span>{" "}
                     First Name
                   </Form.Label>
                   <Form.Control
@@ -92,9 +120,10 @@ const SignupScreen = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="lname">
                   <Form.Label>
+                    {" "}
                     <span>
                       <i className="fa fa-user"></i>
-                    </span>{' '}
+                    </span>{" "}
                     Last Name
                   </Form.Label>
                   <Form.Control
@@ -107,9 +136,10 @@ const SignupScreen = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" controlId="email">
                   <Form.Label>
+                    {" "}
                     <span>
                       <i className="fa-solid fa-envelope"></i>
-                    </span>{' '}
+                    </span>{""}
                     Email
                   </Form.Label>
                   <Form.Control
@@ -122,9 +152,10 @@ const SignupScreen = () => {
                 </Form.Group>
                 <Form.Group className="mb-3" >
                   <Form.Label>
+                    {" "}
                     <span>
                       <i className={show}></i>
-                    </span>{' '}
+                    </span>{" "}
                     Password
                   </Form.Label>
                   <InputGroup className="mb-3">
@@ -144,9 +175,10 @@ const SignupScreen = () => {
                 </small>
                 <Form.Group className="mb-3" >
                   <Form.Label>
+                    {" "}
                     <span>
                       <i className={show}></i>
-                    </span>{' '}
+                    </span>{" "}
                     Confirm Password
                   </Form.Label>
                   <InputGroup className="mb-3">
@@ -164,7 +196,8 @@ const SignupScreen = () => {
                 <br />
                 <div className="d-grid gap-2">
                   <Button className="btn btn-md btn-success" type="submit">
-                    Sign Up
+                    {" "}
+                    Sign Up {" "}
                   </Button>
                 </div>
               </Form>
